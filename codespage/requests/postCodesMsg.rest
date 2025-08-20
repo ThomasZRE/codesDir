@@ -1,0 +1,10 @@
+POST http://localhost:3001/api/codes
+Content-Type: application/json
+
+{
+    "from": "noreply@tm.openai.com",
+    "to": "chatgplay@gmail.com",
+    "date": "Tue, 20 Aug 2025 05:00:00 GMT",
+    "subject": "Your authentication code",
+    "body": "     Your authentication code       \n                       Your authentication code \n\n      Please use the following code to help verify your identity: \n\n  316869 \n\n  Best,\n OpenAI \n\n               If you have any questions please contact us through our help\ncenter <https://help.openai.com/en/>"
+}
