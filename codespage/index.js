@@ -1,6 +1,7 @@
 require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
+const cron = require('node-cron')
 const Code = require('./models/code')
 
 const app = express()
@@ -70,6 +71,21 @@ app.post('/api/codes', (request, response) => {
         response.json(savedCode)
     })
 })
+
+// Deletes entries in database every sunday
+cron.schedule('0 0 * * sun', async () => {
+    console.log('Executing weekly database cleanup')
+    const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000)
+    try {
+        const result = await Code.deleteMany({
+            date: { $lt: threeDaysAgo }
+        })
+        console.log(`Cleanup completed. ${result.deletedCount} old entries were deleted.`)
+    } catch (error) {
+        console.error('Error while cleaning up:', error)
+    } 
+})
+
 
 const PORT = process.env.PORT || 3001
 
