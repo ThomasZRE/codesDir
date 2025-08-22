@@ -19,24 +19,43 @@ app.use(express.json())
 app.use(express.static('dist'))
 app.use(requestLogger)
 
+// Sender secret to authorize request
+const SENDER_SECRET = process.env.SECRET_HEADER_KEY
+
 app.get('/', (request, response) => {
     response.send('<h1>Backend page for codes</h1>')
 })
 
 app.get('/api/codes', (request, response) => {
-    Code.find({}).sort({}).then(codes => {
+    Code.find({}).then(codes => {
         response.json(codes)
     })
 })
 
 // Get latest entries
 app.get('/api/codes/latest', (request, response) => {
-    Code.find({}).sort({ date: -1 }).limit(4).then(codes => {
+    Code.find({
+        $or: [
+            { subject: { $regex: "Your authentication code", $options: "i" } },
+            { subject: { $regex: "Your ChatGPT code is", $options: "i" } }
+        ]
+    }).sort({ date: -1 }).limit(4).then(codes => {
         response.json(codes)
     })
 })
 
 app.post('/api/codes', (request, response) => {
+    // Sender secret header key
+    const receivedSecret = request.headers['x-make-secret'];
+
+    if (receivedSecret !== SENDER_SECRET) {
+        console.warn("Unauthorized request received")
+        return response.status(401).send('Unauthorized')
+    }
+
+    console.log('Authorized POST request received...')
+
+    // Post request
     const body = request.body
 
     if (!body.date) {
