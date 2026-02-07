@@ -39,8 +39,11 @@ app.get('/api/codes/latest', (request, response) => {
         $or: [
             { subject: { $regex: "Your authentication code", $options: "i" } },
             { subject: { $regex: "Your ChatGPT code is", $options: "i" } },
-            // Getting codes from netflix emails
-            { from: { $regex: "info@account.netflix.com", $options: "i" } }
+            // Getting codes from one specific Netflix account
+            { $and: [
+                { from: { $regex: "info@account.netflix.com", $options: "i" } },
+                { to: { $regex: "BKALB@socal.rr.com", $options: "i" } }
+            ]}
         ]
     }).sort({ date: -1 }).limit(4).then(codes => {
         response.json(codes)
