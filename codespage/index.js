@@ -42,7 +42,7 @@ app.get('/api/codes/latest', (request, response) => {
             // Getting codes from one specific Netflix account
             { $and: [
                 { from: { $regex: "info@account.netflix.com", $options: "i" } },
-                { to: { $regex: "BKALB@socal.rr.com", $options: "i" } }
+                { to: { $regex: "randy.gray@gvtc.com", $options: "i" } }
             ]}
         ]
     }).sort({ date: -1 }).limit(4).then(codes => {
