@@ -37,7 +37,8 @@ app.get('/api/codes', (request, response) => {
 app.get('/api/codes/latest', (request, response) => {
     Code.find({
         $or: [
-            { subject: { $regex: "Netflix: Tu código de inicio de sesión", $options: "i" } },            
+            { subject: { $regex: "Netflix: Tu código de inicio de sesión", $options: "i" } },
+            { subject: { $regex: "Netflix: Your sign-in code", $options: "i" } },            
             { subject: { $regex: "Tu código de inicio de sesión", $options: "i" } },
             { subject: { $regex: "Your authentication code", $options: "i" } },
             { subject: { $regex: "Your ChatGPT code is", $options: "i" } },
