@@ -28,7 +28,7 @@ app.get('/', (request, response) => {
 })
 
 app.get('/api/codes', (request, response) => {
-    Code.find({}).then(codes => {
+    Code.find({}).sort({ date: -1 }).limit(10).then(codes => {
         response.json(codes)
     })
 })
@@ -37,6 +37,8 @@ app.get('/api/codes', (request, response) => {
 app.get('/api/codes/latest', (request, response) => {
     Code.find({
         $or: [
+            { subject: { $regex: "Netflix: Tu código de inicio de sesión", $options: "i" } },            
+            { subject: { $regex: "Tu código de inicio de sesión", $options: "i" } },
             { subject: { $regex: "Your authentication code", $options: "i" } },
             { subject: { $regex: "Your ChatGPT code is", $options: "i" } },
             // Getting codes from one specific Netflix account
@@ -45,7 +47,7 @@ app.get('/api/codes/latest', (request, response) => {
                 { to: { $regex: "randy.gray@gvtc.com", $options: "i" } }
             ]}
         ]
-    }).sort({ date: -1 }).limit(4).then(codes => {
+    }).sort({ date: -1 }).limit(5).then(codes => {
         response.json(codes)
     })
 })
