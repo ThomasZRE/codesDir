@@ -38,9 +38,9 @@ app.get('/api/codes/latest', (request, response) => {
     Code.find({
         $or: [
             { subject: { $regex: "Tu código de acceso único para Disney+", $options: "i" } },
-            { subject: { $regex: "Your sign-in code", $options: "i" } },            
+            { subject: { $regex: "Your one-time passcode for Disney+", $options: "i" } },            
         ]
-    }).sort({ date: -1 }).limit(5).then(codes => {
+    }).sort({ date: -1 }).limit(5).then(codes => {  
         response.json(codes)
     })
 })
