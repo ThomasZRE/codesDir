@@ -33,15 +33,29 @@ app.get('/api/codes', (request, response) => {
     })
 })
 
-// Get latest entries
+// Get latest login codes only.
+// Subject wording varies by locale and template, and word order changes:
+//   EN "Your temporary ChatGPT login code"
+//   ES "Tu código temporal de inicio de sesión de ChatGPT"
+//   ES "Tu código de inicio de sesión temporal de ChatGPT"
+
+const LOGIN_CODE_FILTER = {
+    $and: [
+        { subject: /chatgpt/i },
+        { subject: /c[oó]digo|code/i },
+        { subject: /inicio de sesi[oó]n|inicia sesi[oó]n|acceso|log[ -]?in|sign[ -]?in/i },
+    ],
+    // Belt and braces: reject anything that smells like a reset, even if a
+    // future template happens to include a login word too.
+    $nor: [{ subject: /restablec|contrase[ñn]a|reset|password/i }],
+}
+
 app.get('/api/codes/latest', (request, response) => {
-    Code.find({
-        $or: [
-            { subject: { $regex: "Your temporary ChatGPT login code", $options: "i" } },
-            { subject: { $regex: "Tu código temporal de inicio de sesión de ChatGPT", $options: "i" } },            
-        ]
-    }).sort({ date: -1 }).limit(5).then(codes => {  
+    Code.find(LOGIN_CODE_FILTER).sort({ date: -1 }).limit(5).then(codes => {
         response.json(codes)
+    }).catch(error => {
+        console.error('Error while fetching latest codes:', error)
+        response.status(500).json({ error: 'Could not fetch latest codes' })
     })
 })
 
