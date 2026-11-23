@@ -38,7 +38,7 @@ app.get('/api/codes/latest', (request, response) => {
     Code.find({
         $or: [
             { subject: { $regex: "Your temporary ChatGPT login code", $options: "i" } },
-            { subject: { $regex: "Tu código de inicio de sesión temporal de ChatGPT", $options: "i" } },            
+            { subject: { $regex: "Tu código temporal de inicio de sesión de ChatGPT", $options: "i" } },            
         ]
     }).sort({ date: -1 }).limit(5).then(codes => {  
         response.json(codes)
